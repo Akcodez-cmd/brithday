@@ -243,13 +243,17 @@ const CONFIG={
   ],
 
   wish:"Your wish is on its way.",
-  letter:{heading:"Happy Birthday!",greeting:"Dearest [Rasagulla],",
-    message:"[Write your personal message here. A few warm, honest sentences about what she means to you and what you wish for her this year. About sixty to ninety words works best on a phone.]",
-    closing:"With all my love,",signature:"A secret admirer"},
+ letter: {
+  heading: "Happy Birthday!",
+  greeting: "To My Rasagulla❤️",
+  message: `Happy Birthday My Princess 👑❤️ Happy Birthday My Doll 👧💕 Happy Birthday My Happiness 😊❤️ Happy Birthday My Moon 🌙✨ Happy Birthday My Star ⭐💖 Happy Birthday My Rose 🌹😍 Happy Birthday My Heart ❤️🤣 Happy Birthday My Soul 👧🪔 Happy Birthday My Sweet Angel 😇💕 Happy Birthday My Treasure 💎❤️ Happy Birthday My Butterfly 🦋💕 Happy Birthday My Dream ☁️🥰 Happy Birthday My Melody 🎶❤️ Happy Birthday My Everything 💕 Happy Birthday My Precious Girl 💖✨ Happy Birthday My Love Story 📖❤️ Happy Birthday My Sweet Queen 👑❤️ Happy Birthday My Forever Person 💜💕 Happy Birthday My One And Only 🥰❤️ Happy Birthday My Favourite Human 🫶❤️ Happy Birthday My Pretty Girl 😍💕 Happy Birthday My Little World 🌍❤️ Happy Birthday My Heart's Owner 👑💕 Happy Birthday My Sweet Magic ✨😊 Happy Birthday My Precious One 💍 Happy Birthday My Lovely Girl 🌸❤️ Happy Birthday My Happiness Box 🎁💕 Happy Birthday My Cutest Love 😍❤️ Happy Birthday My Beautiful Soul ✨❤️ Happy Birthday My Everything Forever 😈👌 Happy Birthday My Sweetest Memory 😊💕 Happy Birthday My Golden Heart 💛❤️ Happy Birthday My Little Sunshine ☀️💔 Happy Birthday My Favourite Smile 😊 Happy Birthday My Dream Queen 👑✨ Happy Birthday My Sweet Miracle 🥰💕 Happy Birthday mental ❣️ Happy Birthday rasgulla 😇 Happy Birthday mam🤩`,
+  closing: "With lots of love,",
+  signature: "Your Secret Admirer"
+},
   photos:[ /* add up to 7: {src:"photo1.jpg",caption:"Our first trip"} ; empty src shows a placeholder */
-    {src:"images/img1.jpeg",caption:"[Caption 1]"},{src:"images/img2.jpeg",caption:"[Caption 2]"},{src:"images/img3.jpeg",caption:"[Caption 3]"},
-    {src:"images/img4.jpeg",caption:"[Caption 4]"},{src:"images/img5.jpeg",caption:"[Caption 5]"},{src:"images/img1.jpeg",caption:"[Caption 6]"}],
-  finalGreeting:"[Final greeting: one or two warm lines]",
+    {src:"images/img1.jpeg",caption:"[💖]"},{src:"images/img2.jpeg",caption:"[👑]"},{src:"images/img3.jpeg",caption:"[✨✨✨]"},
+    {src:"images/img4.jpeg",caption:"[💕💕]"},{src:"images/img5.jpeg",caption:"[❤️]"},{src:"images/img1.jpeg",caption:"[🌍🌍]"}],
+  finalGreeting:"May your life always be filled with endless smiles, beautiful moments, and dreams that come true. Keep shining, my favourite person. You deserve all the happiness in this world, today and always. ❤️✨",
   musicUrl:"music/lik.mp3" /* optional mp3 URL; leave empty for the built-in soft chimes */
 };
 /* ===================================================== */
@@ -268,13 +272,41 @@ ui();
 let ac,on=false,timer,au;const sc=[261.6,293.7,329.6,392,440,523.3,659.3];
 function tone(f,d=1.8,v=.045){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,ac.currentTime);g.gain.linearRampToValueAtTime(v,ac.currentTime+.05);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+d)}
 function sfx(f){on&&tone(f,.35,.07)}
+
+function startMusic() {
+  if (on) return;
+
+  on = true;
+
+  const b = $('#mus');
+  b.setAttribute('aria-pressed', 'true');
+  b.setAttribute('aria-label', 'Background music is on. Turn off');
+  $('#slash').style.display = 'none';
+
+  if (CONFIG.musicUrl) {
+    au = au || Object.assign(
+      new Audio(CONFIG.musicUrl),
+      { loop: true, volume: 0.5 }
+    );
+    au.play().catch(() => {});
+  } else {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    ac.resume();
+
+    timer = setInterval(
+      () => tone(sc[Math.floor(Math.random() * sc.length)]),
+      750
+    );
+  }
+}
+
 function toast(m){$('#toastMsg').textContent=m;bootstrap.Toast.getOrCreateInstance($('#toast')).show()}
 $('#mus').onclick=()=>{on=!on;const b=$('#mus');b.setAttribute('aria-pressed',on);b.setAttribute('aria-label','Background music is '+(on?'on. Turn off':'off. Turn on'));$('#slash').style.display=on?'none':'';
   if(on){if(CONFIG.musicUrl){au=au||Object.assign(new Audio(CONFIG.musicUrl),{loop:true,volume:.5});au.play().catch(()=>{})}else{ac=ac||new(window.AudioContext||window.webkitAudioContext)();ac.resume();timer=setInterval(()=>tone(sc[Math.floor(Math.random()*sc.length)]),750)}}
   else{clearInterval(timer);au&&au.pause()}toast(on?'Music on':'Music off')};
 const cf=o=>confetti(Object.assign({disableForReducedMotion:true,zIndex:60},o));
 // 1 invitation
-function openEnv(){const e=$('#env');if(e.classList.contains('open'))return;e.classList.add('open');$('#open').disabled=true;sfx(523);cf({particleCount:40,spread:80,origin:{y:.5},colors:['#F2D58A','#E58AB0','#fff'],scalar:.8});setTimeout(()=>go(1),reduce?200:2000)}
+function openEnv(){const e=$('#env');if(e.classList.contains('open'))return;e.classList.add('open');startMusic();$('#open').disabled=true;sfx(523);cf({particleCount:40,spread:80,origin:{y:.5},colors:['#F2D58A','#E58AB0','#fff'],scalar:.8});setTimeout(()=>go(1),reduce?200:2000)}
 $('#open').onclick=openEnv;$('#env').onclick=openEnv;$('#env').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openEnv()}};
 // 2 balloons
 const G=['gp','gl','gg'],found=new Set();
